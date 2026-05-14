@@ -1,0 +1,80 @@
+<div class="dashboard">
+  <h2 class="page-title">Dashboard</h2>
+
+  <div class="stats-grid">
+    <mat-card class="stat-card">
+      <mat-card-content>
+        <div class="stat-content">
+          <div class="stat-info">
+            <span class="stat-label">Clientes Ativos</span>
+            <span class="stat-value">{{ totalActiveClients }}</span>
+          </div>
+          <mat-icon class="stat-icon clients">people</mat-icon>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="stat-card">
+      <mat-card-content>
+        <div class="stat-content">
+          <div class="stat-info">
+            <span class="stat-label">Quadras Cadastradas</span>
+            <span class="stat-value">{{ totalCourts }}</span>
+          </div>
+          <mat-icon class="stat-icon courts">sports_soccer</mat-icon>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="stat-card">
+      <mat-card-content>
+        <div class="stat-content">
+          <div class="stat-info">
+            <span class="stat-label">Reservas Confirmadas</span>
+            <span class="stat-value">{{ confirmedBookings }}</span>
+          </div>
+          <mat-icon class="stat-icon bookings">calendar_month</mat-icon>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <mat-card class="table-card">
+    <mat-card-header>
+      <mat-card-title>Últimas Reservas</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <table mat-table [dataSource]="recentBookings" class="full-width">
+        <ng-container matColumnDef="client">
+          <th mat-header-cell *matHeaderCellDef>Cliente</th>
+          <td mat-cell *matCellDef="let b">{{ b.clientName }}</td>
+        </ng-container>
+        <ng-container matColumnDef="court">
+          <th mat-header-cell *matHeaderCellDef>Quadra</th>
+          <td mat-cell *matCellDef="let b">{{ b.courtName }}</td>
+        </ng-container>
+        <ng-container matColumnDef="startTime">
+          <th mat-header-cell *matHeaderCellDef>Início</th>
+          <td mat-cell *matCellDef="let b">{{ b.startTime | date:'dd/MM/yyyy HH:mm' }}</td>
+        </ng-container>
+        <ng-container matColumnDef="totalPrice">
+          <th mat-header-cell *matHeaderCellDef>Total</th>
+          <td mat-cell *matCellDef="let b">{{ b.totalPrice | currency:'BRL' }}</td>
+        </ng-container>
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef>Status</th>
+          <td mat-cell *matCellDef="let b">
+            <mat-chip [class]="'status-' + b.status.toLowerCase()">
+              {{ b.status === 'CONFIRMED' ? 'Confirmada' : b.status === 'CANCELLED' ? 'Cancelada' : 'Concluída' }}
+            </mat-chip>
+          </td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+      @if (recentBookings.data.length === 0) {
+        <p class="empty-message">Nenhuma reserva encontrada.</p>
+      }
+    </mat-card-content>
+  </mat-card>
+</div>

@@ -1,0 +1,79 @@
+.dashboard {
+  padding: 24px;
+}
+
+.page-title {
+  margin: 0 0 24px;
+  font-size: 24px;
+  font-weight: 600;
+  color: #1565c0;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.stat-card {
+  border-radius: 12px;
+
+  .stat-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 0;
+  }
+
+  .stat-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .stat-label {
+    font-size: 13px;
+    color: #757575;
+    font-weight: 500;
+  }
+
+  .stat-value {
+    font-size: 36px;
+    font-weight: 700;
+    color: #212121;
+  }
+
+  .stat-icon {
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+    opacity: 0.2;
+
+    &.clients { color: #1565c0; }
+    &.courts  { color: #2e7d32; }
+    &.bookings { color: #e65100; }
+  }
+}
+
+.table-card {
+  border-radius: 12px;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.empty-message {
+  text-align: center;
+  color: #9e9e9e;
+  padding: 32px 0;
+}
+
+mat-chip {
+  font-size: 12px;
+
+  &.status-confirmed { background: #e8f5e9 !important; color: #2e7d32 !important; }
+  &.status-cancelled { background: #ffebee !important; color: #c62828 !important; }
+  &.status-completed { background: #e3f2fd !important; color: #1565c0 !important; }
+}

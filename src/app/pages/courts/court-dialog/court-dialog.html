@@ -1,0 +1,47 @@
+<h2 mat-dialog-title>{{ isEdit ? 'Editar Quadra' : 'Nova Quadra' }}</h2>
+
+<mat-dialog-content>
+  <form [formGroup]="form" class="dialog-form">
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Nome</mat-label>
+      <input matInput formControlName="name">
+      @if (form.get('name')?.hasError('required')) {
+        <mat-error>Nome obrigatório</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Descrição</mat-label>
+      <textarea matInput formControlName="description" rows="3"></textarea>
+      @if (form.get('description')?.hasError('required')) {
+        <mat-error>Descrição obrigatória</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Tipo de Esporte</mat-label>
+      <input matInput formControlName="sportType" placeholder="Ex: Futebol, Vôlei, Tênis">
+      @if (form.get('sportType')?.hasError('required')) {
+        <mat-error>Tipo de esporte obrigatório</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Preço por Hora (R$)</mat-label>
+      <input matInput formControlName="pricePerHour" type="number" min="0.01" step="0.01">
+      @if (form.get('pricePerHour')?.hasError('required')) {
+        <mat-error>Preço obrigatório</mat-error>
+      }
+      @if (form.get('pricePerHour')?.hasError('min')) {
+        <mat-error>Preço deve ser maior que zero</mat-error>
+      }
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="cancel()">Cancelar</button>
+  <button mat-raised-button color="primary" (click)="save()" [disabled]="form.invalid">
+    {{ isEdit ? 'Salvar' : 'Cadastrar' }}
+  </button>
+</mat-dialog-actions>

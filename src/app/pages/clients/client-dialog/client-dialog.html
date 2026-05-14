@@ -1,0 +1,50 @@
+<h2 mat-dialog-title>{{ isEdit ? 'Editar Cliente' : 'Novo Cliente' }}</h2>
+
+<mat-dialog-content>
+  <form [formGroup]="form" class="dialog-form">
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Nome</mat-label>
+      <input matInput formControlName="name">
+      @if (form.get('name')?.hasError('required')) {
+        <mat-error>Nome obrigatório</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>E-mail</mat-label>
+      <input matInput formControlName="email" type="email">
+      @if (form.get('email')?.hasError('required')) {
+        <mat-error>E-mail obrigatório</mat-error>
+      }
+      @if (form.get('email')?.hasError('email')) {
+        <mat-error>E-mail inválido</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Telefone</mat-label>
+      <input matInput formControlName="phone" placeholder="11999999999">
+      @if (form.get('phone')?.hasError('required')) {
+        <mat-error>Telefone obrigatório</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>CPF</mat-label>
+      <input matInput formControlName="cpf" placeholder="12345678901">
+      @if (form.get('cpf')?.hasError('required')) {
+        <mat-error>CPF obrigatório</mat-error>
+      }
+      @if (form.get('cpf')?.hasError('minlength') || form.get('cpf')?.hasError('maxlength')) {
+        <mat-error>CPF deve ter entre 11 e 14 caracteres</mat-error>
+      }
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="cancel()">Cancelar</button>
+  <button mat-raised-button color="primary" (click)="save()" [disabled]="form.invalid">
+    {{ isEdit ? 'Salvar' : 'Cadastrar' }}
+  </button>
+</mat-dialog-actions>

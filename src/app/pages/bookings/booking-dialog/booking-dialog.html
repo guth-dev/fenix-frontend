@@ -1,0 +1,64 @@
+<h2 mat-dialog-title>Nova Reserva</h2>
+
+<mat-dialog-content>
+  <form [formGroup]="form" class="dialog-form">
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Cliente</mat-label>
+      <mat-select formControlName="clientId">
+        @for (c of clients; track c.id) {
+          <mat-option [value]="c.id">{{ c.name }}</mat-option>
+        }
+      </mat-select>
+      @if (form.get('clientId')?.hasError('required')) {
+        <mat-error>Selecione um cliente</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Quadra</mat-label>
+      <mat-select formControlName="courtId">
+        @for (c of courts; track c.id) {
+          <mat-option [value]="c.id">{{ c.name }} — R$ {{ c.pricePerHour }}/h</mat-option>
+        }
+      </mat-select>
+      @if (form.get('courtId')?.hasError('required')) {
+        <mat-error>Selecione uma quadra</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Início</mat-label>
+      <input matInput formControlName="startTime" type="datetime-local">
+      @if (form.get('startTime')?.hasError('required')) {
+        <mat-error>Horário de início obrigatório</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Término</mat-label>
+      <input matInput formControlName="endTime" type="datetime-local">
+      @if (form.get('endTime')?.hasError('required')) {
+        <mat-error>Horário de término obrigatório</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Forma de Pagamento</mat-label>
+      <mat-select formControlName="paymentMethod">
+        @for (p of paymentMethods; track p.value) {
+          <mat-option [value]="p.value">{{ p.label }}</mat-option>
+        }
+      </mat-select>
+      @if (form.get('paymentMethod')?.hasError('required')) {
+        <mat-error>Selecione a forma de pagamento</mat-error>
+      }
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="cancel()">Cancelar</button>
+  <button mat-raised-button color="primary" (click)="save()" [disabled]="form.invalid">
+    Confirmar Reserva
+  </button>
+</mat-dialog-actions>

@@ -1,0 +1,38 @@
+<mat-sidenav-container class="sidenav-container">
+  <mat-sidenav mode="side" opened class="sidenav">
+    <div class="sidenav-logo">
+      <mat-icon class="logo-icon">local_fire_department</mat-icon>
+      <span class="logo-text">Fenix</span>
+    </div>
+
+    <mat-nav-list class="nav-list">
+      <a mat-list-item routerLink="/dashboard" routerLinkActive="nav-active">
+        <mat-icon matListItemIcon>dashboard</mat-icon>
+        <span matListItemTitle>Dashboard</span>
+      </a>
+      <a mat-list-item routerLink="/clients" routerLinkActive="nav-active">
+        <mat-icon matListItemIcon>people</mat-icon>
+        <span matListItemTitle>Clientes</span>
+      </a>
+      <a mat-list-item routerLink="/courts" routerLinkActive="nav-active">
+        <mat-icon matListItemIcon>sports_soccer</mat-icon>
+        <span matListItemTitle>Quadras</span>
+      </a>
+      <a mat-list-item routerLink="/bookings" routerLinkActive="nav-active">
+        <mat-icon matListItemIcon>calendar_month</mat-icon>
+        <span matListItemTitle>Reservas</span>
+      </a>
+    </mat-nav-list>
+
+    <div class="sidenav-footer">
+      <button mat-button class="logout-btn" (click)="logout()">
+        <mat-icon>logout</mat-icon>
+        Sair
+      </button>
+    </div>
+  </mat-sidenav>
+
+  <mat-sidenav-content class="main-content">
+    <router-outlet />
+  </mat-sidenav-content>
+</mat-sidenav-container>

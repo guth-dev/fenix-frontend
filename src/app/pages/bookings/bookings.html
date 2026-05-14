@@ -1,0 +1,66 @@
+<div class="page">
+  <div class="page-header">
+    <h2 class="page-title">Reservas</h2>
+    <button mat-raised-button color="primary" (click)="openCreate()">
+      <mat-icon>add</mat-icon>
+      Nova Reserva
+    </button>
+  </div>
+
+  <mat-card>
+    <mat-card-content>
+      <table mat-table [dataSource]="dataSource" class="full-width">
+        <ng-container matColumnDef="client">
+          <th mat-header-cell *matHeaderCellDef>Cliente</th>
+          <td mat-cell *matCellDef="let b">{{ b.clientName }}</td>
+        </ng-container>
+        <ng-container matColumnDef="court">
+          <th mat-header-cell *matHeaderCellDef>Quadra</th>
+          <td mat-cell *matCellDef="let b">{{ b.courtName }}</td>
+        </ng-container>
+        <ng-container matColumnDef="startTime">
+          <th mat-header-cell *matHeaderCellDef>Início</th>
+          <td mat-cell *matCellDef="let b">{{ b.startTime | date:'dd/MM/yy HH:mm' }}</td>
+        </ng-container>
+        <ng-container matColumnDef="endTime">
+          <th mat-header-cell *matHeaderCellDef>Término</th>
+          <td mat-cell *matCellDef="let b">{{ b.endTime | date:'dd/MM/yy HH:mm' }}</td>
+        </ng-container>
+        <ng-container matColumnDef="totalPrice">
+          <th mat-header-cell *matHeaderCellDef>Total</th>
+          <td mat-cell *matCellDef="let b">{{ b.totalPrice | currency:'BRL' }}</td>
+        </ng-container>
+        <ng-container matColumnDef="paymentMethod">
+          <th mat-header-cell *matHeaderCellDef>Pagamento</th>
+          <td mat-cell *matCellDef="let b">{{ paymentLabel(b.paymentMethod) }}</td>
+        </ng-container>
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef>Status</th>
+          <td mat-cell *matCellDef="let b">
+            <mat-chip [class]="'chip-' + b.status.toLowerCase()">
+              {{ statusLabel(b.status) }}
+            </mat-chip>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef>Ações</th>
+          <td mat-cell *matCellDef="let b">
+            @if (b.status === 'CONFIRMED') {
+              <button mat-icon-button matTooltip="Concluir" color="primary" (click)="complete(b)">
+                <mat-icon>check_circle</mat-icon>
+              </button>
+              <button mat-icon-button matTooltip="Cancelar" color="warn" (click)="cancel(b)">
+                <mat-icon>cancel</mat-icon>
+              </button>
+            }
+          </td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+      @if (dataSource.data.length === 0) {
+        <p class="empty-message">Nenhuma reserva encontrada.</p>
+      }
+    </mat-card-content>
+  </mat-card>
+</div>

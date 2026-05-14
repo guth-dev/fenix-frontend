@@ -1,0 +1,85 @@
+.sidenav-container {
+  height: 100vh;
+}
+
+.sidenav {
+  width: 240px;
+  background: #1565c0;
+  color: white;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidenav-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 24px 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+
+  .logo-icon {
+    font-size: 32px;
+    width: 32px;
+    height: 32px;
+    color: #ffb300;
+  }
+
+  .logo-text {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: white;
+  }
+}
+
+.nav-list {
+  flex: 1;
+  padding-top: 8px;
+
+  a {
+    color: rgba(255, 255, 255, 0.8);
+    border-radius: 8px;
+    margin: 2px 8px;
+
+    mat-icon {
+      color: rgba(255, 255, 255, 0.8);
+    }
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+    }
+
+    &.nav-active {
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      font-weight: 600;
+
+      mat-icon {
+        color: #ffb300;
+      }
+    }
+  }
+}
+
+.sidenav-footer {
+  padding: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+
+  .logout-btn {
+    color: rgba(255, 255, 255, 0.8);
+    width: 100%;
+    justify-content: flex-start;
+    gap: 8px;
+
+    &:hover {
+      color: white;
+      background: rgba(255, 255, 255, 0.1);
+    }
+  }
+}
+
+.main-content {
+  background: #f5f5f5;
+  min-height: 100vh;
+}
