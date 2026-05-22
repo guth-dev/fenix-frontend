@@ -1,66 +1,142 @@
 <div class="page">
   <div class="page-header">
     <h2 class="page-title">Reservas</h2>
-    <button mat-raised-button color="primary" (click)="openCreate()">
-      <mat-icon>add</mat-icon>
-      Nova Reserva
-    </button>
+    <div class="header-actions">
+      <mat-button-toggle-group [value]="activeView" (change)="activeView = $event.value">
+        <mat-button-toggle value="list" matTooltip="Visualização em lista">
+          <mat-icon>list</mat-icon>
+        </mat-button-toggle>
+        <mat-button-toggle value="calendar" matTooltip="Visualização em calendário">
+          <mat-icon>calendar_month</mat-icon>
+        </mat-button-toggle>
+      </mat-button-toggle-group>
+      <button mat-raised-button color="primary" (click)="openCreate()">
+        <mat-icon>add</mat-icon>
+        Nova Reserva
+      </button>
+    </div>
   </div>
 
-  <mat-card>
-    <mat-card-content>
-      <table mat-table [dataSource]="dataSource" class="full-width">
-        <ng-container matColumnDef="client">
-          <th mat-header-cell *matHeaderCellDef>Cliente</th>
-          <td mat-cell *matCellDef="let b">{{ b.clientName }}</td>
-        </ng-container>
-        <ng-container matColumnDef="court">
-          <th mat-header-cell *matHeaderCellDef>Quadra</th>
-          <td mat-cell *matCellDef="let b">{{ b.courtName }}</td>
-        </ng-container>
-        <ng-container matColumnDef="startTime">
-          <th mat-header-cell *matHeaderCellDef>Início</th>
-          <td mat-cell *matCellDef="let b">{{ b.startTime | date:'dd/MM/yy HH:mm' }}</td>
-        </ng-container>
-        <ng-container matColumnDef="endTime">
-          <th mat-header-cell *matHeaderCellDef>Término</th>
-          <td mat-cell *matCellDef="let b">{{ b.endTime | date:'dd/MM/yy HH:mm' }}</td>
-        </ng-container>
-        <ng-container matColumnDef="totalPrice">
-          <th mat-header-cell *matHeaderCellDef>Total</th>
-          <td mat-cell *matCellDef="let b">{{ b.totalPrice | currency:'BRL' }}</td>
-        </ng-container>
-        <ng-container matColumnDef="paymentMethod">
-          <th mat-header-cell *matHeaderCellDef>Pagamento</th>
-          <td mat-cell *matCellDef="let b">{{ paymentLabel(b.paymentMethod) }}</td>
-        </ng-container>
-        <ng-container matColumnDef="status">
-          <th mat-header-cell *matHeaderCellDef>Status</th>
-          <td mat-cell *matCellDef="let b">
-            <mat-chip [class]="'chip-' + b.status.toLowerCase()">
-              {{ statusLabel(b.status) }}
-            </mat-chip>
-          </td>
-        </ng-container>
-        <ng-container matColumnDef="actions">
-          <th mat-header-cell *matHeaderCellDef>Ações</th>
-          <td mat-cell *matCellDef="let b">
-            @if (b.status === 'CONFIRMED') {
-              <button mat-icon-button matTooltip="Concluir" color="primary" (click)="complete(b)">
-                <mat-icon>check_circle</mat-icon>
-              </button>
-              <button mat-icon-button matTooltip="Cancelar" color="warn" (click)="cancel(b)">
-                <mat-icon>cancel</mat-icon>
-              </button>
-            }
-          </td>
-        </ng-container>
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-      </table>
-      @if (dataSource.data.length === 0) {
-        <p class="empty-message">Nenhuma reserva encontrada.</p>
-      }
-    </mat-card-content>
-  </mat-card>
+  @if (activeView === 'list') {
+    <mat-card>
+      <mat-card-content>
+        <table mat-table [dataSource]="dataSource" class="full-width">
+          <ng-container matColumnDef="client">
+            <th mat-header-cell *matHeaderCellDef>Cliente</th>
+            <td mat-cell *matCellDef="let b">{{ b.clientName }}</td>
+          </ng-container>
+          <ng-container matColumnDef="court">
+            <th mat-header-cell *matHeaderCellDef>Quadra</th>
+            <td mat-cell *matCellDef="let b">{{ b.courtName }}</td>
+          </ng-container>
+          <ng-container matColumnDef="startTime">
+            <th mat-header-cell *matHeaderCellDef>Início</th>
+            <td mat-cell *matCellDef="let b">{{ b.startTime | date: 'dd/MM/yy HH:mm' }}</td>
+          </ng-container>
+          <ng-container matColumnDef="endTime">
+            <th mat-header-cell *matHeaderCellDef>Término</th>
+            <td mat-cell *matCellDef="let b">{{ b.endTime | date: 'dd/MM/yy HH:mm' }}</td>
+          </ng-container>
+          <ng-container matColumnDef="totalPrice">
+            <th mat-header-cell *matHeaderCellDef>Total</th>
+            <td mat-cell *matCellDef="let b">{{ b.totalPrice | currency: 'BRL' }}</td>
+          </ng-container>
+          <ng-container matColumnDef="paymentMethod">
+            <th mat-header-cell *matHeaderCellDef>Pagamento</th>
+            <td mat-cell *matCellDef="let b">{{ paymentLabel(b.paymentMethod) }}</td>
+          </ng-container>
+          <ng-container matColumnDef="status">
+            <th mat-header-cell *matHeaderCellDef>Status</th>
+            <td mat-cell *matCellDef="let b">
+              <mat-chip [class]="'chip-' + b.status.toLowerCase()">
+                {{ statusLabel(b.status) }}
+              </mat-chip>
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef>Ações</th>
+            <td mat-cell *matCellDef="let b">
+              @if (b.status === 'CONFIRMED') {
+                <button mat-icon-button matTooltip="Concluir" color="primary" (click)="complete(b)">
+                  <mat-icon>check_circle</mat-icon>
+                </button>
+                <button mat-icon-button matTooltip="Cancelar" color="warn" (click)="cancel(b)">
+                  <mat-icon>cancel</mat-icon>
+                </button>
+              }
+            </td>
+          </ng-container>
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+        </table>
+        @if (dataSource.data.length === 0) {
+          <p class="empty-message">Nenhuma reserva encontrada.</p>
+        }
+      </mat-card-content>
+    </mat-card>
+  }
+
+  @if (activeView === 'calendar') {
+    <mat-card>
+      <mat-card-content>
+        <div class="calendar-legend">
+          <span class="legend-item confirmed">Confirmada</span>
+          <span class="legend-item cancelled">Cancelada</span>
+          <span class="legend-item completed">Concluída</span>
+        </div>
+        <full-calendar [options]="calendarOptions" />
+      </mat-card-content>
+    </mat-card>
+  }
 </div>
+
+<ng-template #eventDetailTpl let-booking>
+  <h2 mat-dialog-title>Detalhes da Reserva</h2>
+  <mat-dialog-content>
+    <div class="event-detail">
+      <div class="detail-row">
+        <span class="detail-label">Cliente</span>
+        <span>{{ booking.clientName }}</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">Quadra</span>
+        <span>{{ booking.courtName }}</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">Início</span>
+        <span>{{ booking.startTime | date: 'dd/MM/yyyy HH:mm' }}</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">Término</span>
+        <span>{{ booking.endTime | date: 'dd/MM/yyyy HH:mm' }}</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">Total</span>
+        <span>{{ booking.totalPrice | currency: 'BRL' }}</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">Pagamento</span>
+        <span>{{ paymentLabel(booking.paymentMethod) }}</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">Status</span>
+        <mat-chip [class]="'chip-' + booking.status.toLowerCase()">
+          {{ statusLabel(booking.status) }}
+        </mat-chip>
+      </div>
+    </div>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    @if (booking.status === 'CONFIRMED') {
+      <button mat-button color="primary" (click)="complete(booking)">
+        <mat-icon>check_circle</mat-icon>
+        Concluir
+      </button>
+      <button mat-button color="warn" (click)="cancel(booking)">
+        <mat-icon>cancel</mat-icon>
+        Cancelar
+      </button>
+    }
+    <button mat-button mat-dialog-close>Fechar</button>
+  </mat-dialog-actions>
+</ng-template>
