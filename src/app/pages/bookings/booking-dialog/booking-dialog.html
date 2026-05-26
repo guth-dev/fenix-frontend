@@ -26,21 +26,53 @@
       }
     </mat-form-field>
 
-    <mat-form-field appearance="outline" class="full-width">
-      <mat-label>Início</mat-label>
-      <input matInput formControlName="startTime" type="datetime-local">
-      @if (form.get('startTime')?.hasError('required')) {
-        <mat-error>Horário de início obrigatório</mat-error>
-      }
-    </mat-form-field>
+    <div class="date-time-row">
+      <mat-form-field appearance="outline" class="date-field">
+        <mat-label>Data de início</mat-label>
+        <input matInput [matDatepicker]="startPicker" formControlName="startDate" [min]="minDate" readonly>
+        <mat-datepicker-toggle matIconSuffix [for]="startPicker"></mat-datepicker-toggle>
+        <mat-datepicker #startPicker></mat-datepicker>
+        @if (form.get('startDate')?.hasError('required')) {
+          <mat-error>Data obrigatória</mat-error>
+        }
+      </mat-form-field>
 
-    <mat-form-field appearance="outline" class="full-width">
-      <mat-label>Término</mat-label>
-      <input matInput formControlName="endTime" type="datetime-local">
-      @if (form.get('endTime')?.hasError('required')) {
-        <mat-error>Horário de término obrigatório</mat-error>
-      }
-    </mat-form-field>
+      <mat-form-field appearance="outline" class="time-field">
+        <mat-label>Horário</mat-label>
+        <mat-select formControlName="startHour">
+          @for (slot of timeSlots; track slot.value) {
+            <mat-option [value]="slot.value">{{ slot.label }}</mat-option>
+          }
+        </mat-select>
+        @if (form.get('startHour')?.hasError('required')) {
+          <mat-error>Obrigatório</mat-error>
+        }
+      </mat-form-field>
+    </div>
+
+    <div class="date-time-row">
+      <mat-form-field appearance="outline" class="date-field">
+        <mat-label>Data de término</mat-label>
+        <input matInput [matDatepicker]="endPicker" formControlName="endDate" [min]="minEndDate" readonly>
+        <mat-datepicker-toggle matIconSuffix [for]="endPicker"></mat-datepicker-toggle>
+        <mat-datepicker #endPicker></mat-datepicker>
+        @if (form.get('endDate')?.hasError('required')) {
+          <mat-error>Data obrigatória</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="time-field">
+        <mat-label>Horário</mat-label>
+        <mat-select formControlName="endHour">
+          @for (slot of availableEndTimes; track slot.value) {
+            <mat-option [value]="slot.value">{{ slot.label }}</mat-option>
+          }
+        </mat-select>
+        @if (form.get('endHour')?.hasError('required')) {
+          <mat-error>Obrigatório</mat-error>
+        }
+      </mat-form-field>
+    </div>
 
     <mat-form-field appearance="outline" class="full-width">
       <mat-label>Forma de Pagamento</mat-label>
