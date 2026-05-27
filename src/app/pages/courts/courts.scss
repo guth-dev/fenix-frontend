@@ -18,13 +18,13 @@
 
 .empty-message {
   text-align: center;
-  color: #9e9e9e;
+  color: #767676;
   padding: 32px 0;
 }
 
 mat-chip {
   font-size: 12px;
-  &.chip-active       { background: #e8f5e9 !important; color: #2e7d32 !important; }
+  &.chip-active       { background: #e8f5e9 !important; color: #1b5e20 !important; }
   &.chip-inactive     { background: #ffebee !important; color: #c62828 !important; }
-  &.chip-maintenance  { background: #fff8e1 !important; color: #f57f17 !important; }
+  &.chip-maintenance  { background: #fff8e1 !important; color: #bf360c !important; }
 }
