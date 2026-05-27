@@ -31,6 +31,13 @@
           }
         </mat-form-field>
 
+        <div class="terms-row">
+          <mat-checkbox formControlName="termsAccepted" color="primary">
+            Declaro que li e concordo com os
+            <a class="terms-link" href="javascript:void(0)" (click)="$event.stopPropagation()">Termos de Uso</a>
+          </mat-checkbox>
+        </div>
+
         <button
           mat-raised-button
           color="primary"

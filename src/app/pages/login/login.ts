@@ -8,6 +8,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { AuthService } from '../../core/services/auth.service';
 
 @Component({
@@ -15,7 +16,7 @@ import { AuthService } from '../../core/services/auth.service';
   imports: [
     ReactiveFormsModule, MatCardModule, MatFormFieldModule,
     MatInputModule, MatButtonModule, MatIconModule,
-    MatSnackBarModule, MatProgressSpinnerModule
+    MatSnackBarModule, MatProgressSpinnerModule, MatCheckboxModule
   ],
   templateUrl: './login.html',
   styleUrl: './login.scss'
@@ -31,7 +32,8 @@ export class Login {
 
   form = this.fb.group({
     email: ['', [Validators.required, Validators.email]],
-    password: ['', Validators.required]
+    password: ['', Validators.required],
+    termsAccepted: [false, Validators.requiredTrue]
   });
 
   submit() {
