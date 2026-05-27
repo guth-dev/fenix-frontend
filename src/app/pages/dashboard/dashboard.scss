@@ -60,6 +60,26 @@
   border-radius: 12px;
 }
 
+.filter-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+
+  .filter-date {
+    width: 280px;
+  }
+
+  .filter-status {
+    width: 200px;
+  }
+
+  .clear-btn {
+    color: #757575;
+  }
+}
+
 .full-width {
   width: 100%;
 }
