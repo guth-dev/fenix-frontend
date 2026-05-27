@@ -22,6 +22,30 @@
 
 .full-width { width: 100%; }
 
+.filter-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+
+  .filter-date {
+    width: 280px;
+  }
+
+  .filter-status {
+    width: 200px;
+  }
+
+  .filter-court {
+    width: 200px;
+  }
+
+  .clear-btn {
+    color: #757575;
+  }
+}
+
 .empty-message {
   text-align: center;
   color: #9e9e9e;

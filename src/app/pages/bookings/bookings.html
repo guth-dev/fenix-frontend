@@ -20,6 +20,52 @@
   @if (activeView === 'list') {
     <mat-card>
       <mat-card-content>
+
+        <div class="filter-row">
+          <mat-form-field appearance="outline" subscriptSizing="dynamic" class="filter-date">
+            <mat-label>Período</mat-label>
+            <mat-date-range-input [rangePicker]="picker">
+              <input matStartDate placeholder="Início" [(ngModel)]="filterStartDate" name="startDate" (dateChange)="applyFilter()">
+              <input matEndDate placeholder="Fim" [(ngModel)]="filterEndDate" name="endDate" (dateChange)="applyFilter()">
+            </mat-date-range-input>
+            <mat-datepicker-toggle matIconSuffix [for]="picker" />
+            <mat-date-range-picker #picker />
+            @if (filterStartDate || filterEndDate) {
+              <button matIconSuffix mat-icon-button matTooltip="Limpar período"
+                (click)="filterStartDate = null; filterEndDate = null; applyFilter()">
+                <mat-icon>close</mat-icon>
+              </button>
+            }
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" subscriptSizing="dynamic" class="filter-status">
+            <mat-label>Status</mat-label>
+            <mat-select [(ngModel)]="filterStatus" (ngModelChange)="applyFilter()">
+              <mat-option value="">Todos</mat-option>
+              <mat-option value="CONFIRMED">Confirmada</mat-option>
+              <mat-option value="CANCELLED">Cancelada</mat-option>
+              <mat-option value="COMPLETED">Concluída</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" subscriptSizing="dynamic" class="filter-court">
+            <mat-label>Quadra</mat-label>
+            <mat-select [(ngModel)]="filterCourtId" (ngModelChange)="applyFilter()">
+              <mat-option value="">Todas</mat-option>
+              @for (court of courts; track court.id) {
+                <mat-option [value]="court.id">{{ court.name }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+
+          @if (hasActiveFilter) {
+            <button mat-stroked-button (click)="clearFilters()" class="clear-btn">
+              <mat-icon>filter_alt_off</mat-icon>
+              Limpar filtros
+            </button>
+          }
+        </div>
+
         <table mat-table [dataSource]="dataSource" class="full-width">
           <ng-container matColumnDef="client">
             <th mat-header-cell *matHeaderCellDef>Cliente</th>

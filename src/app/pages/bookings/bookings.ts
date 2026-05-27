@@ -8,14 +8,22 @@ import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dial
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { provideNativeDateAdapter } from '@angular/material/core';
 import { DatePipe, CurrencyPipe } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { FullCalendarModule } from '@fullcalendar/angular';
 import { CalendarOptions, EventClickArg } from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import ptBrLocale from '@fullcalendar/core/locales/pt-br';
 import { BookingService } from '../../core/services/booking.service';
+import { CourtService } from '../../core/services/court.service';
 import { Booking, BookingStatus } from '../../core/models/booking.model';
+import { Court } from '../../core/models/court.model';
 import { BookingDialog } from './booking-dialog/booking-dialog';
 
 const STATUS_COLORS: Record<BookingStatus, string> = {
@@ -26,25 +34,35 @@ const STATUS_COLORS: Record<BookingStatus, string> = {
 
 @Component({
   selector: 'app-bookings',
+  providers: [provideNativeDateAdapter()],
   imports: [
     MatTableModule, MatButtonModule, MatIconModule, MatChipsModule,
     MatCardModule, MatDialogModule, MatSnackBarModule, MatTooltipModule,
-    MatButtonToggleModule, DatePipe, CurrencyPipe, FullCalendarModule,
+    MatButtonToggleModule, MatFormFieldModule, MatInputModule, MatSelectModule,
+    MatDatepickerModule, DatePipe, CurrencyPipe, FormsModule, FullCalendarModule,
   ],
   templateUrl: './bookings.html',
   styleUrl: './bookings.scss',
 })
 export class Bookings implements OnInit {
   private service = inject(BookingService);
+  private courtService = inject(CourtService);
   private dialog = inject(MatDialog);
   private snackBar = inject(MatSnackBar);
   private eventDialogRef: MatDialogRef<unknown> | null = null;
 
   @ViewChild('eventDetailTpl') eventDetailTpl!: TemplateRef<unknown>;
 
+  private allBookings: Booking[] = [];
   dataSource = new MatTableDataSource<Booking>();
   displayedColumns = ['client', 'court', 'startTime', 'endTime', 'totalPrice', 'paymentMethod', 'status', 'actions'];
   activeView: 'list' | 'calendar' = 'list';
+
+  courts: Court[] = [];
+  filterStartDate: Date | null = null;
+  filterEndDate: Date | null = null;
+  filterStatus: BookingStatus | '' = '';
+  filterCourtId: number | '' = '';
 
   calendarOptions: CalendarOptions = {
     plugins: [dayGridPlugin, timeGridPlugin],
@@ -62,24 +80,64 @@ export class Bookings implements OnInit {
   };
 
   ngOnInit() {
+    this.courtService.findAll().subscribe(courts => this.courts = courts);
     this.load();
   }
 
   load() {
     this.service.findAll().subscribe(data => {
-      this.dataSource.data = data;
-      this.calendarOptions = {
-        ...this.calendarOptions,
-        events: data.map(b => ({
-          id: String(b.id),
-          title: `${b.clientName} — ${b.courtName}`,
-          start: b.startTime,
-          end: b.endTime,
-          color: STATUS_COLORS[b.status],
-          extendedProps: { booking: b },
-        })),
-      };
+      this.allBookings = data;
+      this.applyFilter();
     });
+  }
+
+  applyFilter() {
+    let filtered = this.allBookings;
+
+    if (this.filterStartDate) {
+      const start = new Date(this.filterStartDate);
+      start.setHours(0, 0, 0, 0);
+      filtered = filtered.filter(b => new Date(b.startTime) >= start);
+    }
+
+    if (this.filterEndDate) {
+      const end = new Date(this.filterEndDate);
+      end.setHours(23, 59, 59, 999);
+      filtered = filtered.filter(b => new Date(b.startTime) <= end);
+    }
+
+    if (this.filterStatus) {
+      filtered = filtered.filter(b => b.status === this.filterStatus);
+    }
+
+    if (this.filterCourtId) {
+      filtered = filtered.filter(b => b.courtId === this.filterCourtId);
+    }
+
+    this.dataSource.data = filtered;
+    this.calendarOptions = {
+      ...this.calendarOptions,
+      events: filtered.map(b => ({
+        id: String(b.id),
+        title: `${b.clientName} — ${b.courtName}`,
+        start: b.startTime,
+        end: b.endTime,
+        color: STATUS_COLORS[b.status],
+        extendedProps: { booking: b },
+      })),
+    };
+  }
+
+  clearFilters() {
+    this.filterStartDate = null;
+    this.filterEndDate = null;
+    this.filterStatus = '';
+    this.filterCourtId = '';
+    this.applyFilter();
+  }
+
+  get hasActiveFilter(): boolean {
+    return !!this.filterStartDate || !!this.filterEndDate || !!this.filterStatus || !!this.filterCourtId;
   }
 
   onEventClick(arg: EventClickArg) {
@@ -92,7 +150,7 @@ export class Bookings implements OnInit {
       if (!result) return;
       this.service.create(result).subscribe({
         next: () => { this.snackBar.open('Reserva criada!', '', { duration: 3000 }); this.load(); },
-        error: (err) => this.snackBar.open(err.error?.message ?? 'Erro ao criar reserva.', 'Fechar', { duration: 4000 }),
+        error: (err) => this.snackBar.open(err.error?.error ?? 'Erro ao criar reserva.', 'Fechar', { duration: 4000 }),
       });
     });
   }
@@ -101,7 +159,7 @@ export class Bookings implements OnInit {
     this.eventDialogRef?.close();
     this.service.cancel(booking.id).subscribe({
       next: () => { this.snackBar.open('Reserva cancelada.', '', { duration: 3000 }); this.load(); },
-      error: (err) => this.snackBar.open(err.error?.message ?? 'Erro ao cancelar.', 'Fechar', { duration: 4000 }),
+      error: (err) => this.snackBar.open(err.error?.error ?? 'Erro ao cancelar.', 'Fechar', { duration: 4000 }),
     });
   }
 
@@ -109,7 +167,7 @@ export class Bookings implements OnInit {
     this.eventDialogRef?.close();
     this.service.complete(booking.id).subscribe({
       next: () => { this.snackBar.open('Reserva concluída!', '', { duration: 3000 }); this.load(); },
-      error: (err) => this.snackBar.open(err.error?.message ?? 'Erro ao concluir.', 'Fechar', { duration: 4000 }),
+      error: (err) => this.snackBar.open(err.error?.error ?? 'Erro ao concluir.', 'Fechar', { duration: 4000 }),
     });
   }
 
