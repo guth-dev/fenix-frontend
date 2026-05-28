@@ -40,7 +40,8 @@ export class Login {
     if (this.form.invalid) return;
 
     this.loading = true;
-    this.auth.login(this.form.value as any).subscribe({
+    const { email, password } = this.form.value;
+    this.auth.login({ email, password } as any).subscribe({
       next: () => this.router.navigate(['/dashboard']),
       error: () => {
         this.snackBar.open('E-mail ou senha inválidos.', 'Fechar', { duration: 3000 });

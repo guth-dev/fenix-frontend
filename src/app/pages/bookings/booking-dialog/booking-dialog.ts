@@ -24,9 +24,8 @@ import { forkJoin } from 'rxjs';
   styles: [`
     .dialog-form { display: flex; flex-direction: column; gap: 4px; min-width: 400px; }
     .full-width { width: 100%; }
-    .date-time-row { display: flex; gap: 12px; }
-    .date-field { flex: 1; }
-    .time-field { width: 130px; }
+    .time-row { display: flex; gap: 12px; }
+    .time-field { flex: 1; }
   `]
 })
 export class BookingDialog implements OnInit {
@@ -49,9 +48,8 @@ export class BookingDialog implements OnInit {
   form = this.fb.group({
     clientId: [null as number | null, Validators.required],
     courtId: [null as number | null, Validators.required],
-    startDate: [null as Date | null, Validators.required],
+    date: [null as Date | null, Validators.required],
     startHour: ['', Validators.required],
-    endDate: [null as Date | null, Validators.required],
     endHour: ['', Validators.required],
     paymentMethod: ['', Validators.required]
   });
@@ -65,14 +63,6 @@ export class BookingDialog implements OnInit {
       this.courts = courts.filter(c => c.status === 'ACTIVE');
     });
 
-    this.form.get('startDate')!.valueChanges.subscribe(startDate => {
-      const endDateCtrl = this.form.get('endDate')!;
-      if (endDateCtrl.value && startDate && endDateCtrl.value < startDate) {
-        endDateCtrl.setValue(null);
-        this.form.get('endHour')!.setValue('');
-      }
-    });
-
     this.form.get('startHour')!.valueChanges.subscribe(() => {
       const endHourCtrl = this.form.get('endHour')!;
       if (endHourCtrl.value && !this.availableEndTimes.find(s => s.value === endHourCtrl.value)) {
@@ -81,16 +71,9 @@ export class BookingDialog implements OnInit {
     });
   }
 
-  get minEndDate(): Date {
-    return this.form.get('startDate')?.value ?? this.minDate;
-  }
-
   get availableEndTimes(): { value: string; label: string }[] {
-    const startDate = this.form.get('startDate')?.value;
-    const endDate = this.form.get('endDate')?.value;
     const startHour = this.form.get('startHour')?.value;
-
-    if (startDate && endDate && this.isSameDay(startDate, endDate) && startHour) {
+    if (startHour) {
       return this.timeSlots.filter(slot => slot.value > startHour);
     }
     return this.timeSlots;
@@ -98,13 +81,13 @@ export class BookingDialog implements OnInit {
 
   save() {
     if (this.form.invalid) return;
-    const { clientId, courtId, startDate, startHour, endDate, endHour, paymentMethod } = this.form.value;
+    const { clientId, courtId, date, startHour, endHour, paymentMethod } = this.form.value;
     this.dialogRef.close({
       clientId,
       courtId,
       paymentMethod,
-      startTime: this.combineDateTime(startDate!, startHour!),
-      endTime: this.combineDateTime(endDate!, endHour!)
+      startTime: this.combineDateTime(date!, startHour!),
+      endTime: this.combineDateTime(date!, endHour!)
     });
   }
 
@@ -127,11 +110,5 @@ export class BookingDialog implements OnInit {
   private combineDateTime(date: Date, time: string): string {
     const pad = (n: number) => n.toString().padStart(2, '0');
     return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${time}:00`;
-  }
-
-  private isSameDay(a: Date, b: Date): boolean {
-    return a.getFullYear() === b.getFullYear() &&
-      a.getMonth() === b.getMonth() &&
-      a.getDate() === b.getDate();
   }
 }

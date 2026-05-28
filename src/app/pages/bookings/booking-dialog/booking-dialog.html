@@ -26,19 +26,19 @@
       }
     </mat-form-field>
 
-    <div class="date-time-row">
-      <mat-form-field appearance="outline" class="date-field">
-        <mat-label>Data de início</mat-label>
-        <input matInput [matDatepicker]="startPicker" formControlName="startDate" [min]="minDate" readonly>
-        <mat-datepicker-toggle matIconSuffix [for]="startPicker"></mat-datepicker-toggle>
-        <mat-datepicker #startPicker></mat-datepicker>
-        @if (form.get('startDate')?.hasError('required')) {
-          <mat-error>Data obrigatória</mat-error>
-        }
-      </mat-form-field>
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Data</mat-label>
+      <input matInput [matDatepicker]="picker" formControlName="date" [min]="minDate" readonly>
+      <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+      @if (form.get('date')?.hasError('required')) {
+        <mat-error>Data obrigatória</mat-error>
+      }
+    </mat-form-field>
 
+    <div class="time-row">
       <mat-form-field appearance="outline" class="time-field">
-        <mat-label>Horário</mat-label>
+        <mat-label>Horário de início</mat-label>
         <mat-select formControlName="startHour">
           @for (slot of timeSlots; track slot.value) {
             <mat-option [value]="slot.value">{{ slot.label }}</mat-option>
@@ -48,21 +48,9 @@
           <mat-error>Obrigatório</mat-error>
         }
       </mat-form-field>
-    </div>
-
-    <div class="date-time-row">
-      <mat-form-field appearance="outline" class="date-field">
-        <mat-label>Data de término</mat-label>
-        <input matInput [matDatepicker]="endPicker" formControlName="endDate" [min]="minEndDate" readonly>
-        <mat-datepicker-toggle matIconSuffix [for]="endPicker"></mat-datepicker-toggle>
-        <mat-datepicker #endPicker></mat-datepicker>
-        @if (form.get('endDate')?.hasError('required')) {
-          <mat-error>Data obrigatória</mat-error>
-        }
-      </mat-form-field>
 
       <mat-form-field appearance="outline" class="time-field">
-        <mat-label>Horário</mat-label>
+        <mat-label>Horário de término</mat-label>
         <mat-select formControlName="endHour">
           @for (slot of availableEndTimes; track slot.value) {
             <mat-option [value]="slot.value">{{ slot.label }}</mat-option>
